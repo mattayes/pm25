@@ -24,7 +24,7 @@ nei <- nei %>%
                year = parse_date_time(year, "%Y")
         )
 
-## Filter Baltimore City readings and remove outlier
+## Filter Baltimore City readings, group by year and type, and summarize
 baltimore_type <- nei %>%
         filter(fips == "24510") %>%
         group_by(year,type) %>%

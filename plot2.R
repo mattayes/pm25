@@ -25,7 +25,7 @@ nei <- nei %>%
         )
 
 ## Filter Baltimore City readings, group by year, summarize by yearly totals
-baltimore <- nei %>%
+baltimore_year <- nei %>%
         filter(fips == "24510") %>%
         group_by(year) %>%
         summarize(total = sum(emissions))

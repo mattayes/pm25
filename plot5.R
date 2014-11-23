@@ -28,21 +28,23 @@ nei <- nei %>%
 mobile_balt <- nei %>%
         filter(fips == "24510")
 
-## Find motor vehicle (aka mobile on-road) SCC, inner join with nei, and clean up column names
+## Filter motor vehicle (mobile on-road) SCC, inner join with mobile_balt, 
+## and clean up column names
 mobile <- scc %>%
         select(SCC, EI.Sector) %>%
         filter(grepl("On-Road", scc$EI.Sector))
-mobile <- inner_join(mobile_balt, mobile, by = c("scc" = "SCC"))
-names(mobile) <- tolower(names(mobile))
+mobile_balt <- inner_join(mobile_balt, mobile, by = c("scc" = "SCC"))
+rm(mobile)
+names(mobile_balt) <- tolower(names(mobile_balt))
 
 ## Group by year, summarize
-mobile_total <- mobile %>%
+mobile_balt <- mobile_balt %>%
         group_by(year) %>%
         summarize(total = sum(emissions))
 
 ## Plot
 png("plot5.png")
-ggplot(mobile_total, aes(year, total)) +
+ggplot(mobile_balt, aes(year, total)) +
         geom_point() +
         geom_smooth(method = "lm") +
         coord_cartesian(ylim = c(0, 600)) +

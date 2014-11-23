@@ -24,7 +24,7 @@ nei <- nei %>%
                year = parse_date_time(year, "%Y")
         )
 
-## Find coal combustion SCC, inner join with nei, and clean up column names
+## Filter coal combustion SCC, inner join with nei, and clean up column names
 coal <- scc %>%
         select(SCC, EI.Sector) %>%
         filter(grepl("[Cc]oal", scc$EI.Sector))
@@ -32,13 +32,13 @@ coal <- inner_join(nei, coal, by = c("scc" = "SCC"))
 names(coal) <- tolower(names(coal))
 
 ## Group by year, summarize
-coal_total <- coal %>%
+coal <- coal %>%
         group_by(year) %>%
         summarize(total = sum(emissions))
 
 ## Plot
 png("plot4.png")
-ggplot(coal_total, aes(year, total)) +
+ggplot(coal, aes(year, total)) +
         geom_point() +
         geom_smooth(method = "lm") +
         xlab("Year") +

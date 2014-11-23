@@ -24,11 +24,15 @@ nei <- nei %>%
                year = parse_date_time(year, "%Y")
         )
 
+## Filter Baltimore City readings
+mobile_balt <- nei %>%
+        filter(fips == "24510")
+
 ## Find motor vehicle (aka mobile on-road) SCC, inner join with nei, and clean up column names
 mobile <- scc %>%
         select(SCC, EI.Sector) %>%
         filter(grepl("On-Road", scc$EI.Sector))
-mobile <- inner_join(nei, mobile, by = c("scc" = "SCC"))
+mobile <- inner_join(mobile_balt, mobile, by = c("scc" = "SCC"))
 names(mobile) <- tolower(names(mobile))
 
 ## Group by year, summarize
@@ -41,7 +45,7 @@ png("plot5.png")
 ggplot(mobile_total, aes(year, total)) +
         geom_point() +
         geom_smooth(method = "lm") +
-        coord_cartesian(ylim = c(0, 200000)) +
+        coord_cartesian(ylim = c(0, 600)) +
         xlab("Year") +
         ylab("Emissions (tons)") +
         ggtitle(expression("Total Emissions of PM"[2.5]*" from Mobile On-Road Sources"))
